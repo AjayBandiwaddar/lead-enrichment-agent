@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import sys
 
 from dotenv import load_dotenv
 
@@ -69,11 +70,19 @@ def _print_usage(label: str, result) -> None:
 
 
 async def main() -> None:
+    if len(sys.argv) != 2:
+        raise SystemExit(
+            "Usage: python -m tests.manual_verified_extraction <domain>"
+        )
+
+    domain = sys.argv[1].strip()
+
+    if not domain:
+        raise SystemExit("Domain cannot be empty")
+
     pipeline = ResearchPipeline()
 
-    result = await pipeline.run(
-        "postman.com"
-    )
+    result = await pipeline.run(domain)
 
     state = result.state
     pages = list(
